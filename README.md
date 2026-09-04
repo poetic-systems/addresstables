@@ -1,0 +1,86 @@
+# addresstables
+
+USPS Publication 28 address vocabularies, as data.
+
+## Copyright and License
+
+Copyright 2026 Poetic Systems
+
+Unless otherwise specified all code and related artifacts in this repository are
+made available under the Apache 2 License. See the [license](./LICENSE) for
+details.
+
+### Data
+
+The tables here are transcribed from
+[USPS Publication 28](https://pe.usps.com/text/pub28/welcome.htm), a U.S.
+government publication in the public domain.
+
+## Purpose
+
+Two libraries need the same tables and disagree about them.
+
+[go-projectusat](https://github.com/PortobelloAuth/go-projectusat) parses an
+address into its Project US@ components. [zipcity](https://github.com/poetic-systems/zipcity)
+compresses street, city, region, and postal code data into bloom filters so a
+parser can ask whether a street name is plausible for a place without calling a
+service. A bloom filter answers "maybe present" or "definitely absent", so the
+key the caller builds has to be byte-for-byte the key the filter was built with.
+A mismatch in the key form is not a soft failure — it is a confident, silent
+false negative.
+
+That makes the abbreviation tables an interop contract rather than a
+convenience. When zipcity's Census-derived expansion and go-projectusat's
+Publication 28 abbreviation disagree about a single suffix, one library builds
+`FOX PARK DR` and the other looks up `FOX PARK DRIVE`, and the address is
+rejected by a filter that contains it. Seven such disagreements were measured
+across the shipped suffix table. The tables live here so there is one row for
+each word and both sides read it.
+
+## What this package is not
+
+It does not normalize, match, or parse. There are no `Normalize` or
+`Abbreviate` functions and there will not be.
+
+That is deliberate. The two consumers legitimately need different matching
+semantics — go-projectusat resolves an input spelling to a canonical output
+form and has to rate its confidence; zipcity builds an index key and has to be
+exact. Putting a matcher here would force one of those to be wrong, and would
+put the interesting behaviour in the place neither team reviews. What both
+sides genuinely share is the rows.
+
+So each package exposes plain structs and Go iterators over them:
+
+```go
+suffixes := map[string]string{}
+for s := range streetsuffixes.All() {
+    for _, alt := range s.Alt {
+        suffixes[alt] = s.Short
+    }
+}
+```
+
+A consumer collects the shape it wants — a map keyed by abbreviation, a map
+keyed by every spelling, a slice sorted by length for longest-match — and owns
+the semantics of the lookup it built.
+
+## Packages
+
+| Package | Contents |
+| --- | --- |
+| `streetsuffixes` | The 206 Publication 28 street suffixes: primary name, standard abbreviation, and every commonly used spelling. |
+| `directionals` | The eight English directionals and the eight Spanish ones, each Spanish row naming its English equivalent. |
+| `puertorico` | Puerto Rico Spanish street types, secondary designators, and urbanization keywords. |
+
+## Uppercase
+
+Every row is uppercase, because Project US@ requires uppercase output. A
+consumer that wants another case folds it. This package does not choose one for
+anybody.
+
+## Addresses are patient data
+
+These tables describe addresses, and in the systems that consume them an
+address identifies a patient. Nothing here holds an address, and nothing here
+should: no fixture, test, or example may contain a real one. Invented streets
+and the examples printed in the standard itself are fine.
