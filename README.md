@@ -73,6 +73,7 @@ the semantics of the lookup it built.
 | `streetsuffixes` | The 206 Publication 28 street suffixes: primary name, standard abbreviation, and every commonly used spelling. |
 | `directionals` | The eight English directionals and the eight Spanish ones, each Spanish row naming its English equivalent. |
 | `puertorico` | Puerto Rico Spanish street types, secondary designators, and urbanization keywords. |
+| `secondaryunit` | The 24 Publication 28 Appendix C2 secondary unit designators, each marked with whether it is followed by a number. |
 | `ustigerfile/featuretypes` | The 503 Census Bureau feature types (TechDoc Appendix D): the codes TIGER writes into PRETYP and SUFTYP, and the abbreviation it displays for each. |
 | `ustigerfile/qualifiers` | The 17 Census Bureau feature name qualifiers (TechDoc Appendix C): BUSINESS, BYPASS, SPUR, and the rest, as PREQUAL and SUFQUAL codes. |
 
