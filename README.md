@@ -1,6 +1,6 @@
 # addresstables
 
-USPS Publication 28 address vocabularies, as data.
+USPS Publication 28 and Census Bureau TIGER/Line address vocabularies, as data.
 
 ## Copyright and License
 
@@ -13,8 +13,10 @@ details.
 ### Data
 
 The tables here are transcribed from
-[USPS Publication 28](https://pe.usps.com/text/pub28/welcome.htm), a U.S.
-government publication in the public domain.
+[USPS Publication 28](https://pe.usps.com/text/pub28/welcome.htm) and from the
+appendices of the Census Bureau's
+[TIGER/Line technical documentation](https://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2025/TGRSHP2025_TechDoc.pdf),
+both U.S. government publications in the public domain.
 
 ## Purpose
 
@@ -71,6 +73,20 @@ the semantics of the lookup it built.
 | `streetsuffixes` | The 206 Publication 28 street suffixes: primary name, standard abbreviation, and every commonly used spelling. |
 | `directionals` | The eight English directionals and the eight Spanish ones, each Spanish row naming its English equivalent. |
 | `puertorico` | Puerto Rico Spanish street types, secondary designators, and urbanization keywords. |
+| `ustigerfile/featuretypes` | The 503 Census Bureau feature types (TechDoc Appendix D): the codes TIGER writes into PRETYP and SUFTYP, and the abbreviation it displays for each. |
+| `ustigerfile/qualifiers` | The 17 Census Bureau feature name qualifiers (TechDoc Appendix C): BUSINESS, BYPASS, SPUR, and the rest, as PREQUAL and SUFQUAL codes. |
+
+The `ustigerfile` packages are the Census Bureau's tables, kept apart from the
+Postal Service's because they are a different vocabulary that happens to
+describe the same streets. They overlap on the ordinary suffixes and disagree
+on several abbreviations, and the disagreement is the reason both are here:
+reconciling them is a consumer's job, and it cannot be done from one table.
+
+TIGER's own directional table (TechDoc Appendix B) is not among them. Its
+sixteen words and abbreviations are the Publication 28 sixteen, row for row,
+so `directionals` serves both. It adds only a numeric code, which no TIGER
+field a consumer reads is expressed in — PREDIRABRV and SUFDIRABRV carry the
+abbreviation itself.
 
 ## Uppercase
 
