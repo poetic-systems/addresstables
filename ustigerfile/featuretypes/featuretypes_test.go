@@ -66,3 +66,16 @@ func TestRowsAreUppercase(t *testing.T) {
 		}
 	}
 }
+
+// TestRowsAreTrimmed holds the other half of that rule. A row is a key or a
+// word joined into text; a stray space at either end survives both, and is
+// invisible in the source line that carries it.
+func TestRowsAreTrimmed(t *testing.T) {
+	for f := range featuretypes.All() {
+		for _, word := range []string{f.Code, f.Full, f.Short, f.Translation} {
+			if word != strings.TrimSpace(word) {
+				t.Errorf("%q is not trimmed", word)
+			}
+		}
+	}
+}
