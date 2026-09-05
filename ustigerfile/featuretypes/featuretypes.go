@@ -1,11 +1,13 @@
 // Package featuretypes holds Appendix D of the Census Bureau's TIGER/Line
 // technical documentation as data.
 //
-// A TIGER FEATNAMES record does not carry a street name as a string. It
-// carries a base name and four codes around it — PREQUAL, PRETYP, SUFTYP,
-// SUFQUAL — and the name a reader recognizes only exists once those codes are
-// expanded. This table is the SUFTYP and PRETYP half: the 503 feature types
-// the Census Bureau names, with the abbreviation it displays for each.
+// A TIGER FEATNAMES record does carry a rendered street name, in FULLNAME, but
+// it is safer to build the name from the parts: a base name and four codes
+// around it — PREQUAL, PRETYP, SUFTYP, SUFQUAL. FULLNAME is one abbreviated
+// rendering of those parts and is not always complete, so a reader that wants
+// the whole name expands the codes itself. This table is the SUFTYP and PRETYP
+// half: the 503 feature types the Census Bureau names, with the abbreviation it
+// displays for each.
 //
 // It is not Publication 28 Appendix C1 and must not be substituted for it.
 // The two overlap on the ordinary street suffixes and disagree on the
