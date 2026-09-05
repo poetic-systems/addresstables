@@ -16,7 +16,10 @@ The tables here are transcribed from
 [USPS Publication 28](https://pe.usps.com/text/pub28/welcome.htm) and from the
 appendices of the Census Bureau's
 [TIGER/Line technical documentation](https://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2025/TGRSHP2025_TechDoc.pdf),
-both U.S. government publications in the public domain.
+and from Appendix A of the
+[Project US@ technical specification](https://asapnet.org/wp-content/uploads/2022/03/Project_US_FINAL_Technical_Specification_Version_1.0.pdf).
+The Postal Service and Census Bureau publications are U.S. government works in
+the public domain.
 
 ## Purpose
 
@@ -72,6 +75,7 @@ the semantics of the lookup it built.
 | --- | --- |
 | `streetsuffixes` | The 206 Publication 28 street suffixes: primary name, standard abbreviation, and every commonly used spelling. |
 | `directionals` | The eight English directionals and the eight Spanish ones, each Spanish row naming its English equivalent. |
+| `diacritics` | Project US@ Appendix A: the 67 accented characters and the ASCII letter the standard substitutes for each. |
 | `puertorico` | Puerto Rico Spanish street types, secondary designators, and urbanization keywords. |
 | `ustigerfile/featuretypes` | The 503 Census Bureau feature types (TechDoc Appendix D): the codes TIGER writes into PRETYP and SUFTYP, and the abbreviation it displays for each. |
 | `ustigerfile/qualifiers` | The 17 Census Bureau feature name qualifiers (TechDoc Appendix C): BUSINESS, BYPASS, SPUR, and the rest, as PREQUAL and SUFQUAL codes. |
@@ -93,6 +97,11 @@ abbreviation itself.
 Every row is uppercase, because Project US@ requires uppercase output. A
 consumer that wants another case folds it. This package does not choose one for
 anybody.
+
+`diacritics` is the exception, and has to be. Appendix A gives capital A with
+grave and small a with grave separate rows, so case is data there rather than
+presentation, and its substitutions are stored exactly as the appendix prints
+them.
 
 ## Addresses are patient data
 
