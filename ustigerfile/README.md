@@ -31,10 +31,13 @@ having to pick one. One table, no choice.
 ## Reading a street name out of TIGER
 
 A `FEATNAMES` record carries a rendered name in `FULLNAME`, but the parts are
-safer: a base `NAME` with four codes around it — `PREQUAL`, `PRETYP`,
-`SUFTYP`, `SUFQUAL`. `FULLNAME` is one abbreviated rendering of those parts and
-is not always complete, so a reader that wants the whole name expands the codes
-itself. These two tables are what it expands them with.
+safer: a base `NAME` with six codes around it — `PREQUAL`, `PREDIRABRV`,
+`PRETYP` before it, and `SUFTYP`, `SUFDIRABRV`, `SUFQUAL` after it. `FULLNAME`
+is one abbreviated rendering of those parts and is not always complete, so a
+reader that wants the whole name expands the codes itself. These two tables
+expand the qualifiers and the types; the two directional fields carry the
+abbreviation itself, and [`directionals`](../directionals) is what expands
+those.
 
 A consumer producing Project US@ output does not stop there. The Census
 abbreviation is not the Publication 28 abbreviation, so the word is read here
