@@ -460,6 +460,16 @@ var usStatesAndPossessions = []Region{
 	},
 }
 
+// canadianProvincesAndTerritories comes from the Project US@ technical
+// specification, pp. 31-32, not from Publication 28. Appendix B of Publication
+// 28 is states and possessions, the eight directionals and the three military
+// "states"; it carries no Canadian list at all.
+//
+// The specification prints "Nunavat Territory". That spelling is retained in
+// Alt so a record written to the standard still looks up, but Primary is the
+// spelling Canada Post uses. Nothing conforming is emitted from Primary
+// anyway - the standard requires the two-character abbreviation - so the
+// choice only decides what a caller reading the row back sees.
 var canadianProvincesAndTerritories = []Region{
 	{
 		Primary: "ALBERTA",
