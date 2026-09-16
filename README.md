@@ -79,6 +79,7 @@ the semantics of the lookup it built.
 | `puertorico` | Puerto Rico Spanish street types, secondary designators, and urbanization keywords. |
 | `secondaryunit` | The 24 Publication 28 Appendix C2 secondary unit designators, each marked with whether it is followed by a number. |
 | `diacritics` | Project US@ Appendix A: the 67 accented characters and the ASCII letter the standard substitutes for each. |
+| `cityabbreviations` | The four words city names are commonly written abbreviated with — SAINT, SAINTE, MOUNT, FORT — and the abbreviation each, so both sides spell a city out the way Publication 28 §223 requires. |
 | `ustigerfile/featuretypes` | The 503 Census Bureau feature types (TechDoc Appendix D): the codes TIGER writes into PRETYP and SUFTYP, and the abbreviation it displays for each. |
 | `ustigerfile/qualifiers` | The 17 Census Bureau feature name qualifiers (TechDoc Appendix C): BUSINESS, BYPASS, SPUR, and the rest, as PREQUAL and SUFQUAL codes. |
 
