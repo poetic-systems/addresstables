@@ -76,7 +76,7 @@ the semantics of the lookup it built.
 | `streetsuffixes` | The 206 Publication 28 street suffixes: primary name, standard abbreviation, and every commonly used spelling. |
 | `directionals` | The eight English directionals and the eight Spanish ones, each Spanish row naming its English equivalent. |
 | `regions` | The Publication 28 states and possessions, Canadian provinces and territories, and military "states": primary name, two-letter abbreviation, and every commonly used spelling. |
-| `puertorico` | Puerto Rico Spanish street types, secondary designators, and urbanization keywords. |
+| `puertorico` | Puerto Rico Spanish street types, secondary designators, urbanization keywords, and the urbanization names that stand alone without URB. |
 | `secondaryunit` | The 24 Publication 28 Appendix C2 secondary unit designators, each marked with whether it is followed by a number. |
 | `diacritics` | Project US@ Appendix A: the 67 accented characters and the ASCII letter the standard substitutes for each. |
 | `cityabbreviations` | The four words city names are commonly written abbreviated with — SAINT, SAINTE, MOUNT, FORT — and the abbreviation each, so both sides spell a city out the way Publication 28 §223 requires. |
