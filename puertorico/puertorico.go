@@ -4,11 +4,12 @@
 // so these are not a localization of the tables in the sibling packages — they
 // are their own vocabulary, and a Puerto Rico address is written in it.
 //
-// Three tables live here. StreetTypes are the leading type that opens a Puerto
+// Four tables live here. StreetTypes are the leading type that opens a Puerto
 // Rico street line, where the mainland puts its suffix at the end. Secondaries
 // are the secondary address identifiers. Urbanizations are the designators
 // that open the urbanization line, which the standard puts on a line of its
-// own above the secondary address identifier.
+// own above the secondary address identifier. StandaloneUrbanizations are the
+// urbanization names that are never preceded by URB.
 //
 // Urbanization is kept separate from Secondary deliberately. URB is not a
 // secondary designator — the standard gives it its own line and its own
@@ -115,4 +116,95 @@ var urbanizations = []Urbanization{
 // Urbanizations yields every urbanization designator spelling.
 func Urbanizations() iter.Seq[Urbanization] {
 	return slices.Values(urbanizations)
+}
+
+// StandaloneUrbanization is a Puerto Rico urbanization name that stands alone
+// on the urbanization line: the standard requires it to be written without
+// the URB designator, not with it.
+//
+// This is the Exceptions table from Project US@ Technical Specification
+// pp. 28-29. The standard lists these under "Urbanizations" and says they
+// "stand alone and MUST NOT require the use of the abbreviation URB" — so a
+// consumer that sees one of these Fulls opening the urbanization line MUST
+// NOT prepend URB, unlike the ordinary case covered by Urbanizations above.
+// The standard's own examples: "URB EXT VISTA BELLA" is wrong, "EXT VISTA
+// BELLA" is correct; "URB ALTS DE CANA" is wrong, "ALTS DE CANA" is correct.
+//
+// The standard writes several rows with a parenthesized S, e.g. "Altura(s)"
+// abbreviated "ALT(S)". Per the standard, "Abbreviations containing the
+// letter S in parentheses at the end of the abbreviation allows for the
+// plural representation of the word in an abbreviated form" — the
+// parenthesized notation is not itself a spelling, and its own worked
+// example uses the plural (ALTS, not ALT(S)). So every such row is stored
+// here as two ordinary rows, singular and plural, on both Full and Short:
+// ALTURA/ALT and ALTURAS/ALTS, BRISA/BRISA and BRISAS/BRISAS, COLINA/COLINA
+// and COLINAS/COLINAS, LOMA/LOMA and LOMAS/LOMAS, PARCELA/PARCELA and
+// PARCELAS/PARCELAS, VILLA/VILLA and VILLAS/VILLAS, VISTA/VISTA and
+// VISTAS/VISTAS.
+//
+// Three of these words already appear elsewhere in this package with a
+// different abbreviation, and that is deliberate, not a bug to reconcile:
+// the standard gives one word a different abbreviation depending on its
+// role. SECTOR abbreviates to SEC in Secondaries but SECT here. PARCELA(S)
+// abbreviates to PARC in Secondaries (as PARCELAS) but is unabbreviated
+// here (PARCELA/PARCELAS). VILLA(S) abbreviates to VIL in Secondaries but is
+// unabbreviated here (VILLA/VILLAS). Likewise PASEO and VISTA appear in
+// StreetTypes abbreviated PSO and VIS; here, in the standalone-urbanization
+// role, both are unabbreviated. Do not "fix" either table to match the
+// other — they are the same words in two separate roles the standard treats
+// differently, and each table already matches its own table's role.
+//
+// Rows are uppercase and diacritics are folded, as in the sibling tables:
+// the standard's "Extensión" is stored as EXTENSION. Folding an accented
+// input is the consumer's job.
+type StandaloneUrbanization struct {
+	Full  string
+	Short string
+}
+
+var standaloneUrbanizations = []StandaloneUrbanization{
+	{Full: "ALTURA", Short: "ALT"},
+	{Full: "ALTURAS", Short: "ALTS"},
+	{Full: "BARRIADA", Short: "BDA"},
+	{Full: "BARRIO", Short: "BO"},
+	{Full: "BOSQUE", Short: "BOSQUE"},
+	{Full: "BRISA", Short: "BRISA"},
+	{Full: "BRISAS", Short: "BRISAS"},
+	{Full: "CHALETS", Short: "CHALETS"},
+	{Full: "CIUDAD", Short: "CIUDAD"},
+	{Full: "COLINA", Short: "COLINA"},
+	{Full: "COLINAS", Short: "COLINAS"},
+	{Full: "COMUNIDAD", Short: "COMUNIDAD"},
+	{Full: "ESTANCIAS", Short: "EST"},
+	{Full: "EXTENSION", Short: "EXT"},
+	{Full: "HACIENDA", Short: "HACIENDA"},
+	{Full: "INDUSTRIAL", Short: "IND"},
+	{Full: "JARDINES", Short: "JARD"},
+	{Full: "LOMA", Short: "LOMA"},
+	{Full: "LOMAS", Short: "LOMAS"},
+	{Full: "MANSIONES", Short: "MANS"},
+	{Full: "PARCELA", Short: "PARCELA"},
+	{Full: "PARCELAS", Short: "PARCELAS"},
+	{Full: "PARQUE", Short: "PARQ"},
+	{Full: "PASEO", Short: "PASEO"},
+	{Full: "PORTAL", Short: "PORTAL"},
+	{Full: "PORTALES", Short: "PORTALES"},
+	{Full: "PRADERA", Short: "PRADERA"},
+	{Full: "QUINTAS", Short: "QUINTAS"},
+	{Full: "REPARTO", Short: "REPTO"},
+	{Full: "RESIDENCIAL", Short: "RES"},
+	{Full: "RIBERAS", Short: "RIBERAS"},
+	{Full: "SECTOR", Short: "SECT"},
+	{Full: "TERRAZA", Short: "TERR"},
+	{Full: "VALLE", Short: "VALLE"},
+	{Full: "VILLA", Short: "VILLA"},
+	{Full: "VILLAS", Short: "VILLAS"},
+	{Full: "VISTA", Short: "VISTA"},
+	{Full: "VISTAS", Short: "VISTAS"},
+}
+
+// StandaloneUrbanizations yields every urbanization name that must not be
+// preceded by URB.
+func StandaloneUrbanizations() iter.Seq[StandaloneUrbanization] {
+	return slices.Values(standaloneUrbanizations)
 }
