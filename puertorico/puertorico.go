@@ -4,12 +4,14 @@
 // so these are not a localization of the tables in the sibling packages — they
 // are their own vocabulary, and a Puerto Rico address is written in it.
 //
-// Four tables live here. StreetTypes are the leading type that opens a Puerto
+// Five tables live here. StreetTypes are the leading type that opens a Puerto
 // Rico street line, where the mainland puts its suffix at the end. Secondaries
 // are the secondary address identifiers. Urbanizations are the designators
 // that open the urbanization line, which the standard puts on a line of its
 // own above the secondary address identifier. StandaloneUrbanizations are the
-// urbanization names that are never preceded by URB.
+// urbanization names that are never preceded by URB. RouteWords are the words
+// a Puerto Rico rural route or highway contract route address is written
+// with, and the RR, HC, or BOX the standard requires in their place.
 //
 // Urbanization is kept separate from Secondary deliberately. URB is not a
 // secondary designator — the standard gives it its own line and its own
@@ -248,4 +250,107 @@ var standaloneUrbanizations = []StandaloneUrbanization{
 // preceded by URB.
 func StandaloneUrbanizations() iter.Seq[StandaloneUrbanization] {
 	return slices.Values(standaloneUrbanizations)
+}
+
+// RouteWord is a word that may be written in a Puerto Rico rural route or
+// highway contract route address, and the form the standard requires in its
+// place.
+type RouteWord struct {
+	Spelling string
+	Standard string // RR, HC or BOX
+}
+
+// routeWords is the vocabulary behind RR___ BOX___ and HC____BOX____, per
+// Project US@ v1.0 p. 30, Rural Routes:
+//
+//	A rural route address in the patient record MUST be standardized as
+//	follows: RR___ BOX___
+//
+//	Developers MUST NOT use the words RURAL, RUTA RURAL, BUZON, or BZN. The
+//	designations RFD, RD, and RT (meaning rural route) MUST be changed to RR
+//	and developers MUST have a space between RR and the route number and BOX
+//	and the box number.
+//
+//	Developers MUST NOT add a leading zero before the rural route number.
+//
+// The standard's own rural route examples:
+//
+//	RR03 BOX 9800            -> RR 3 BOX 9800
+//	RFD ROUTE 4 BZN 1725     -> RR 4 BOX 1725
+//	RUTA RURAL 3 BUZON 12000 -> RR 3 BOX 12000
+//	RFD 1 Bzn 17-A           -> RR 1 BOX 17A
+//
+// pp. 30-31, Highway Contract Routes, calls itself "basically the same format
+// utilized for rural routes", with its own designation in place of RR:
+//
+//	Highway contract route addresses MUST be standardized as HC____BOX____.
+//	... Health IT developers MUST NOT include leading zeros before the route
+//	number.
+//
+//	Ruta Estrella 1 Buzón 18 -> HC 1 BOX 18
+//	HC 03 Bzn 1050           -> HC 1 BOX 1050
+//
+// The second highway contract example is a defect in the printed standard,
+// recorded here so a reader does not have to rediscover it: HC 03 cannot
+// standardize to HC 1, and the leading-zero rule on the same page gives HC 3
+// BOX 1050 instead. This table holds words, not the defective worked number,
+// so the wrong answer is not reproduced as a row.
+//
+// RFD, RD, and RT are English, and are in this Spanish-vocabulary table
+// anyway: p. 30 states a different rule about the same words than p. 22 does
+// for the mainland — MUST be changed to RR here, only SHOULD change there —
+// and an address written RFD ROUTE 4 BZN 1725 has to find both halves, RFD
+// ROUTE and BZN, in one vocabulary to be read at all. Secondaries already
+// carries English words for a comparable reason. RD is also Pub 28's
+// abbreviation for ROAD, so a consumer MUST NOT apply this table outside a
+// recognized route pattern. That hazard is the mainland's own: go-projectusat's
+// ruralroute package carries RD for the same reason and requires the whole
+// RR ___ BOX ___ pattern before it will read one, precisely so RD is never
+// mistaken for a street suffix.
+//
+// Appendix F, p. 63, glosses three of these for information, not for
+// substitution: RUTA RURAL = Rural Route, RUTA ESTRELLA = Highway Contract,
+// BUZON = Box.
+//
+// BUZÓN carries an accent in the standard's own text, and this table holds
+// only the unaccented BUZON — the same reason Urbanization gives for storing
+// URBANIZACION unaccented: folding an accented input is the consumer's job,
+// not this table's.
+//
+// NOTE: rows are ordered by the length of Spelling descending, then
+// alphabetically — not alphabetically ascending as the sibling tables in this
+// package are. A consumer scanning an address for one of these words, or
+// replacing one with its Standard form, wants the first match it finds at a
+// given position to be the longest one available, not merely the
+// alphabetically first one: RR listed before RURAL would let a scanner stop
+// at RR and leave RURAL half-read, and BOX before BUZON would do the same to
+// BUZON. Sorting the longest Spelling first, and breaking ties alphabetically
+// only when two words are the same length, means a caller that takes the
+// first match in row order always reads a whole word, never a fragment of a
+// longer one.
+//
+// This table has one reader, go-projectusat#119, not two: a route designator
+// never appears in a TIGER street name, so zipcity has no use for it. It
+// belongs here anyway — every vocabulary go-projectusat's puertorico package
+// reads already comes from here, and putting this one inline would make it
+// the exception inside its own package.
+var routeWords = []RouteWord{
+	{Spelling: "RUTA ESTRELLA", Standard: "HC"},
+	{Spelling: "RUTA RURAL", Standard: "RR"},
+	{Spelling: "RFD ROUTE", Standard: "RR"},
+	{Spelling: "BUZON", Standard: "BOX"},
+	{Spelling: "RURAL", Standard: "RR"},
+	{Spelling: "BOX", Standard: "BOX"},
+	{Spelling: "BZN", Standard: "BOX"},
+	{Spelling: "RFD", Standard: "RR"},
+	{Spelling: "HC", Standard: "HC"},
+	{Spelling: "RD", Standard: "RR"},
+	{Spelling: "RR", Standard: "RR"},
+	{Spelling: "RT", Standard: "RR"},
+}
+
+// RouteWords yields every Puerto Rico rural route and highway contract route
+// word, in longest-first order — see the NOTE on routeWords.
+func RouteWords() iter.Seq[RouteWord] {
+	return slices.Values(routeWords)
 }

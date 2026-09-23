@@ -6,6 +6,24 @@ import (
 	"github.com/poetic-systems/addresstables/puertorico"
 )
 
+// wantRouteWords pins the table's exact contents and order: twelve rows, the
+// twelfth (BZN) placed by the length-then-alphabetical rule rather than
+// tacked on at the end. See TestRouteWords and the NOTE on routeWords.
+var wantRouteWords = []puertorico.RouteWord{
+	{Spelling: "RUTA ESTRELLA", Standard: "HC"},
+	{Spelling: "RUTA RURAL", Standard: "RR"},
+	{Spelling: "RFD ROUTE", Standard: "RR"},
+	{Spelling: "BUZON", Standard: "BOX"},
+	{Spelling: "RURAL", Standard: "RR"},
+	{Spelling: "BOX", Standard: "BOX"},
+	{Spelling: "BZN", Standard: "BOX"},
+	{Spelling: "RFD", Standard: "RR"},
+	{Spelling: "HC", Standard: "HC"},
+	{Spelling: "RD", Standard: "RR"},
+	{Spelling: "RR", Standard: "RR"},
+	{Spelling: "RT", Standard: "RR"},
+}
+
 func TestStreetTypesComplete(t *testing.T) {
 	seen := map[string]bool{}
 	for s := range puertorico.StreetTypes() {
@@ -179,6 +197,62 @@ func TestStandaloneUrbanizationsPluralExpansion(t *testing.T) {
 		if _, ok := got[full]; ok {
 			t.Errorf("StandaloneUrbanizations() stores the literal parenthesized notation %q; it must be expanded", full)
 		}
+	}
+}
+
+// TestRouteWords pins the table's twelve rows, in order, against
+// wantRouteWords: content, count, and order all in one assertion, so a row
+// dropped, duplicated, or moved is caught here rather than downstream in
+// go-projectusat#119.
+func TestRouteWords(t *testing.T) {
+	got := []puertorico.RouteWord{}
+	for r := range puertorico.RouteWords() {
+		got = append(got, r)
+	}
+	if len(got) != len(wantRouteWords) {
+		t.Fatalf("RouteWords() yielded %d rows, want %d", len(got), len(wantRouteWords))
+	}
+	for i, w := range wantRouteWords {
+		if got[i] != w {
+			t.Errorf("RouteWords()[%d] = %+v, want %+v", i, got[i], w)
+		}
+	}
+}
+
+// TestRouteWordsComplete holds the same completeness property the other
+// tables assert: no row has an empty field, and Standard is always one of the
+// three forms the standard allows in this position.
+func TestRouteWordsComplete(t *testing.T) {
+	for r := range puertorico.RouteWords() {
+		if r.Spelling == "" {
+			t.Errorf("route word with empty Spelling: %+v", r)
+		}
+		switch r.Standard {
+		case "RR", "HC", "BOX":
+		default:
+			t.Errorf("route word %q has Standard %q, want RR, HC, or BOX", r.Spelling, r.Standard)
+		}
+	}
+}
+
+// TestRouteWordsOrderedByLengthThenAlphabetically holds the ordering
+// invariant the NOTE on routeWords describes: each row's Spelling is no
+// longer than the previous row's, and rows of equal length are alphabetical.
+// A later row appended in the wrong place would fail this silently otherwise.
+func TestRouteWordsOrderedByLengthThenAlphabetically(t *testing.T) {
+	var prev *puertorico.RouteWord
+	for r := range puertorico.RouteWords() {
+		r := r
+		if prev != nil {
+			if len(r.Spelling) > len(prev.Spelling) {
+				t.Errorf("%q (len %d) follows %q (len %d): length must be non-increasing",
+					r.Spelling, len(r.Spelling), prev.Spelling, len(prev.Spelling))
+			} else if len(r.Spelling) == len(prev.Spelling) && r.Spelling < prev.Spelling {
+				t.Errorf("%q follows %q at equal length but sorts before it alphabetically",
+					r.Spelling, prev.Spelling)
+			}
+		}
+		prev = &r
 	}
 }
 
