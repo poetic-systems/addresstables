@@ -33,18 +33,59 @@ type StreetType struct {
 	English string
 }
 
+// streetTypes is the union of two lists the standard keeps separately, not a
+// transcription of either alone. Appendix E, p. 62 ("Standard Abbreviations
+// for Spanish-Language Addresses"), gives twelve rows with abbreviations. The
+// body of the standard, p. 26, under "Street Names and Prefixes", gives a
+// second, independent list of seventeen — the standard's own words, the line
+// wrap inside CALLEJON preserved as the document has it:
+//
+//	CALLE AVENIDA, PASEO, PLAZA, PASAJE, CARR, PARQUE, VEREDA, VISTA, VIA, CALLE
+//	JON, PATIO, BLVD, CAMINO, CAMINITO, CALETA, MARGINAL
+//
+// Seven words are in both lists: CALLE, AVENIDA, PASEO, VEREDA, VISTA,
+// CAMINO, CAMINITO. Five are Appendix E only: CERRADA, CIRCULO, ENTRADA,
+// PLACITA, RANCHO. Ten are p. 26 only: PLAZA, PASAJE, CARRETERA (CARR is the
+// p. 26 spelling), PARQUE, VIA, CALLEJON, PATIO, BOULEVARD (BLVD is the p. 26
+// spelling), CALETA, MARGINAL. Two independent lists that only half overlap
+// is what says this is a union to take, not an errata to reconcile one list
+// against the other. See #17.
+//
+// Eight of the ten p. 26-only rows have no abbreviation published anywhere in
+// the standard, so Short is the word itself — the same convention
+// standaloneUrbanizations already uses for BOSQUE. The other three —
+// CARRETERA/CARR, PARQUE/PARQ, and BOULEVARD/BLVD — are each the same word in
+// a second role: CARRETERA is already a Secondary, PARQUE is already a
+// StandaloneUrbanization, and BOULEVARD/BLVD is Pub 28's English suffix pair.
+// The StandaloneUrbanization comment already establishes that a word carrying
+// a different abbreviation in a different role is normal here and not a
+// collision to fix.
+//
+// English is documentation only, never output: the standard gives no basis
+// for translating a Spanish street type, and elsewhere requires the opposite
+// — Developers MUST NOT translate CALLE to the suffix ST (p. 25).
 var streetTypes = []StreetType{
 	{Full: "AVENIDA", Short: "AVE", English: "AVENUE"},
+	{Full: "BOULEVARD", Short: "BLVD", English: "BOULEVARD"},
+	{Full: "CALETA", Short: "CALETA", English: "COVE"},
 	{Full: "CALLE", Short: "CLL", English: "STREET"},
+	{Full: "CALLEJON", Short: "CALLEJON", English: "ALLEY"},
 	{Full: "CAMINITO", Short: "CMT", English: "LITTLE ROAD"},
 	{Full: "CAMINO", Short: "CAM", English: "ROAD"},
+	{Full: "CARRETERA", Short: "CARR", English: "HIGHWAY"},
 	{Full: "CERRADA", Short: "CER", English: "CLOSED"},
 	{Full: "CIRCULO", Short: "CIR", English: "CIRCLE"},
 	{Full: "ENTRADA", Short: "ENT", English: "ENTRANCE"},
+	{Full: "MARGINAL", Short: "MARGINAL", English: "FRONTAGE ROAD"},
+	{Full: "PARQUE", Short: "PARQ", English: "PARK"},
+	{Full: "PASAJE", Short: "PASAJE", English: "PASSAGE"},
 	{Full: "PASEO", Short: "PSO", English: "PATH"},
+	{Full: "PATIO", Short: "PATIO", English: "COURTYARD"},
 	{Full: "PLACITA", Short: "PLA", English: "LITTLE PLAZA"},
+	{Full: "PLAZA", Short: "PLAZA", English: "PLAZA"},
 	{Full: "RANCHO", Short: "RCH", English: "RANCH"},
 	{Full: "VEREDA", Short: "VER", English: "SMALL PATH"},
+	{Full: "VIA", Short: "VIA", English: "WAY"},
 	{Full: "VISTA", Short: "VIS", English: "VIEW"},
 }
 

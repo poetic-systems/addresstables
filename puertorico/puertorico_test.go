@@ -19,6 +19,66 @@ func TestStreetTypesComplete(t *testing.T) {
 	}
 }
 
+// TestStreetTypesIncludesTheP25OnlyRows pins the ten rows #17 adds from the
+// p. 25 prefix list that Appendix E does not carry, so a future edit cannot
+// silently drop one back out.
+func TestStreetTypesIncludesTheP25OnlyRows(t *testing.T) {
+	want := map[string]puertorico.StreetType{
+		"BOULEVARD": {Full: "BOULEVARD", Short: "BLVD", English: "BOULEVARD"},
+		"CALETA":    {Full: "CALETA", Short: "CALETA", English: "COVE"},
+		"CALLEJON":  {Full: "CALLEJON", Short: "CALLEJON", English: "ALLEY"},
+		"CARRETERA": {Full: "CARRETERA", Short: "CARR", English: "HIGHWAY"},
+		"MARGINAL":  {Full: "MARGINAL", Short: "MARGINAL", English: "FRONTAGE ROAD"},
+		"PARQUE":    {Full: "PARQUE", Short: "PARQ", English: "PARK"},
+		"PASAJE":    {Full: "PASAJE", Short: "PASAJE", English: "PASSAGE"},
+		"PATIO":     {Full: "PATIO", Short: "PATIO", English: "COURTYARD"},
+		"PLAZA":     {Full: "PLAZA", Short: "PLAZA", English: "PLAZA"},
+		"VIA":       {Full: "VIA", Short: "VIA", English: "WAY"},
+	}
+	got := map[string]puertorico.StreetType{}
+	for s := range puertorico.StreetTypes() {
+		got[s.Full] = s
+	}
+	for full, w := range want {
+		if got[full] != w {
+			t.Errorf("StreetTypes()[%q] = %+v, want %+v", full, got[full], w)
+		}
+	}
+}
+
+// TestPARQUEAndCARRETERAResolveInBothTables holds the two-role precedent the
+// package doc establishes: CARRETERA/CARR is also a Secondary and PARQUE/PARQ
+// is also a StandaloneUrbanization, and both abbreviations must agree with
+// their StreetTypes row rather than drift from it.
+func TestPARQUEAndCARRETERAResolveInBothTables(t *testing.T) {
+	streetTypeShort := map[string]string{}
+	for s := range puertorico.StreetTypes() {
+		streetTypeShort[s.Full] = s.Short
+	}
+	secondaryShort := map[string]string{}
+	for s := range puertorico.Secondaries() {
+		secondaryShort[s.Full] = s.Short
+	}
+	standaloneShort := map[string]string{}
+	for u := range puertorico.StandaloneUrbanizations() {
+		standaloneShort[u.Full] = u.Short
+	}
+
+	if got, want := streetTypeShort["CARRETERA"], "CARR"; got != want {
+		t.Errorf("StreetTypes()[CARRETERA] = %q, want %q", got, want)
+	}
+	if got, want := secondaryShort["CARRETERA"], "CARR"; got != want {
+		t.Errorf("Secondaries()[CARRETERA] = %q, want %q", got, want)
+	}
+
+	if got, want := streetTypeShort["PARQUE"], "PARQ"; got != want {
+		t.Errorf("StreetTypes()[PARQUE] = %q, want %q", got, want)
+	}
+	if got, want := standaloneShort["PARQUE"], "PARQ"; got != want {
+		t.Errorf("StandaloneUrbanizations()[PARQUE] = %q, want %q", got, want)
+	}
+}
+
 func TestSecondariesComplete(t *testing.T) {
 	seen := map[string]bool{}
 	for s := range puertorico.Secondaries() {
