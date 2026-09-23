@@ -19,10 +19,10 @@ func TestStreetTypesComplete(t *testing.T) {
 	}
 }
 
-// TestStreetTypesIncludesTheP25OnlyRows pins the ten rows #17 adds from the
-// p. 25 prefix list that Appendix E does not carry, so a future edit cannot
+// TestStreetTypesIncludesTheP26OnlyRows pins the ten rows #17 adds from the
+// p. 26 prefix list that Appendix E does not carry, so a future edit cannot
 // silently drop one back out.
-func TestStreetTypesIncludesTheP25OnlyRows(t *testing.T) {
+func TestStreetTypesIncludesTheP26OnlyRows(t *testing.T) {
 	want := map[string]puertorico.StreetType{
 		"BOULEVARD": {Full: "BOULEVARD", Short: "BLVD", English: "BOULEVARD"},
 		"CALETA":    {Full: "CALETA", Short: "CALETA", English: "COVE"},
