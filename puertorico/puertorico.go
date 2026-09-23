@@ -303,8 +303,10 @@ type RouteWord struct {
 // ROUTE and BZN, in one vocabulary to be read at all. Secondaries already
 // carries English words for a comparable reason. RD is also Pub 28's
 // abbreviation for ROAD, so a consumer MUST NOT apply this table outside a
-// recognized route pattern — the same caution StreetTypes' English column
-// carries for a word that means something else out of context.
+// recognized route pattern. That hazard is the mainland's own: go-projectusat's
+// ruralroute package carries RD for the same reason and requires the whole
+// RR ___ BOX ___ pattern before it will read one, precisely so RD is never
+// mistaken for a street suffix.
 //
 // Appendix F, p. 63, glosses three of these for information, not for
 // substitution: RUTA RURAL = Rural Route, RUTA ESTRELLA = Highway Contract,
