@@ -63,7 +63,7 @@ type StreetType struct {
 //
 // English is documentation only, never output: the standard gives no basis
 // for translating a Spanish street type, and elsewhere requires the opposite
-// — Developers MUST NOT translate CALLE to the suffix ST (p. 25).
+// — Developers MUST NOT translate CALLE to the suffix ST (p. 26, the same page).
 var streetTypes = []StreetType{
 	{Full: "AVENIDA", Short: "AVE", English: "AVENUE"},
 	{Full: "BOULEVARD", Short: "BLVD", English: "BOULEVARD"},
