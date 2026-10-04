@@ -318,7 +318,7 @@ func TestStandaloneUrbanizationAbbreviationsAreRoleDependent(t *testing.T) {
 // on poBoxWords in puertorico.go.
 func TestPOBoxWordsAreThePub28List(t *testing.T) {
 	want := []string{
-		"APARTADO", "APTDO", "GPO BOX", "CALL BOX", "CALLER", "BOX", "BUZON", "PO BOX S–1190",
+		"APARTADO", "APTDO", "GPO BOX", "CALL BOX", "CALLER", "BOX", "BUZON",
 	}
 	var got []string
 	for w := range puertorico.POBoxWords() {
