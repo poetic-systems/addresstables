@@ -1,6 +1,7 @@
 package puertorico_test
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/poetic-systems/addresstables/puertorico"
@@ -309,5 +310,21 @@ func TestStandaloneUrbanizationAbbreviationsAreRoleDependent(t *testing.T) {
 	}
 	if got, want := standaloneShort["VISTA"], "VISTA"; got != want {
 		t.Errorf("StandaloneUrbanizations()[VISTA] = %q, want %q", got, want)
+	}
+}
+
+// TestPOBoxWordsAreThePub28List pins the Spanish post office box designators to
+// the p. 29 and p. 45 list, so an edit cannot silently drop one. See the NOTE
+// on poBoxWords in puertorico.go.
+func TestPOBoxWordsAreThePub28List(t *testing.T) {
+	want := []string{
+		"APARTADO", "APTDO", "GPO BOX", "CALL BOX", "CALLER", "BOX", "BUZON", "PO BOX S–1190",
+	}
+	var got []string
+	for w := range puertorico.POBoxWords() {
+		got = append(got, w)
+	}
+	if !slices.Equal(got, want) {
+		t.Errorf("POBoxWords() = %q, want %q", got, want)
 	}
 }

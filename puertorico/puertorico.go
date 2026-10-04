@@ -360,10 +360,14 @@ func RouteWords() iter.Seq[RouteWord] {
 // BOX" — and its examples rewrite APARTADO and GPO BOX as PO BOX. Each is a
 // spelling to replace, not a form to keep.
 //
-// The list is the standard's own examples and nothing more. Other Spanish
-// spellings of apartado are not written down in the standard, so they are not
-// added here on a guess.
-var poBoxWords = []string{"APARTADO", "GPO BOX"}
+// The list is the standard's own words, p. 29 and p. 45 (Pub 28 c2 §045):
+// "PO Box addresses often appear with the words CALLER, CALL BOX, GPO BOX, PO
+// BOX S–1190, APTDO, APARTADO, BOX, BUZON. These are changed to PO BOX as
+// output to a mailpiece." Other Spanish spellings are not written down in the
+// standard, so they are not added here on a guess.
+var poBoxWords = []string{
+	"APARTADO", "APTDO", "GPO BOX", "CALL BOX", "CALLER", "BOX", "BUZON", "PO BOX S–1190",
+}
 
 // POBoxWords yields every Spanish spelling of a Puerto Rico post office box
 // designator. A spelling is more than one word for GPO BOX, so a reader matches
