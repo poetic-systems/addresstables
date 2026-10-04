@@ -354,3 +354,20 @@ var routeWords = []RouteWord{
 func RouteWords() iter.Seq[RouteWord] {
 	return slices.Values(routeWords)
 }
+
+// poBoxWords are the Spanish spellings of the post office box designator. p. 29
+// MUST NOT use them — "Developers MUST NOT use Spanish words to represent PO
+// BOX" — and its examples rewrite APARTADO and GPO BOX as PO BOX. Each is a
+// spelling to replace, not a form to keep.
+//
+// The list is the standard's own examples and nothing more. Other Spanish
+// spellings of apartado are not written down in the standard, so they are not
+// added here on a guess.
+var poBoxWords = []string{"APARTADO", "GPO BOX"}
+
+// POBoxWords yields every Spanish spelling of a Puerto Rico post office box
+// designator. A spelling is more than one word for GPO BOX, so a reader matches
+// the designator a word at a time, as RouteWords does for route words.
+func POBoxWords() iter.Seq[string] {
+	return slices.Values(poBoxWords)
+}
